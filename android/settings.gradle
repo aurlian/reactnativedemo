@@ -1,0 +1,3 @@
+rootProject.name = 'serdig'
+
+include ':app'
