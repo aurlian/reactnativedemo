@@ -1,14 +1,46 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+
+import PlaceInput from './src/components/PlaceInput/PlaceInput';
+import PlaceList from './src/components/PlaceList/PlaceList';
+import placeImage from './src/assets/profile.jpg';
 
 export default class App extends React.Component {
+
+  state = {
+    places: []
+  }
+
+  placeAddedHandler = placeName => {
+    this.setState(prevState => {
+      return {
+        places: prevState.places.concat({
+          key: Math.random().toString(),
+          name: placeName,
+          image: placeImage
+        })
+      };
+    });
+  }
+
+  placeDeletedHandler = index => {
+    this.setState(prevState => {
+      return {
+        places: prevState.places.filter((place) => {
+          return place.key !== index;
+        })
+      }
+    });
+  }
+
   render() {
+
     return (
       <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
-        <Text>Changes you make will automatically reload.</Text>
-        <Text>Shake your phone to open the developer menu.</Text>
+        <PlaceInput onPlaceAdded={this.placeAddedHandler} />
+        <PlaceList places={this.state.places} onItemDeleted={this.placeDeletedHandler} />
       </View>
+
     );
   }
 }
@@ -18,6 +50,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
-  },
+    justifyContent: 'flex-start',
+  }
 });
