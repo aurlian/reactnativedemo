@@ -1,59 +1,28 @@
-import React, { Component } from 'react';
-import { View, TextInput, Button, StyleSheet } from 'react-native';
+import React, { Component } from "react";
+import { View, TextInput, Button, StyleSheet } from "react-native";
+
+import DefaultTextInput from "../UI/DefaultTextInput/DefaultTextInput";
 
 class PlaceInput extends Component {
+  state = {
+    placeName: ""
+  };
 
-	state = {
-		placeName: ""
-	}
+  placeNameChangeHandler = val => {
+    this.setState({
+      placeName: val
+    });
+  };
 
-	placeNameChangeHandler = (val) => {
-		this.setState({
-			placeName: val
-		});
-	}
-
-	placeSubmitHandler = () => {
-		if(this.state.placeName.trim() === "") {
-		  return;
-		}
-
-		this.props.onPlaceAdded(this.state.placeName);
-
-		this.setState({
-			placeName: ""
-		});
-	  }
-
-	render() {
-		return (
-			<View style={styles.inputContainer}>
-				<TextInput style={styles.inputText}
-					placeholder="enter text"
-					value={this.state.placeName}
-					onChangeText={this.placeNameChangeHandler} />
-
-				<Button title="Add" style={styles.inputButton}
-				 onPress={this.placeSubmitHandler} />
-			</View>
-		);
-	}
+  render() {
+    return (
+      <DefaultTextInput
+        placeholder="Place Name"
+        value={this.state.placeName}
+        onChangeText={this.placeNameChangeHandler}
+      />
+    );
+  }
 }
-
-const styles = StyleSheet.create({
-	inputContainer: {
-		width: "90%",
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems: 'center',
-	},
-	inputText: {
-		width: "70%"
-	},
-	inputButton: {
-		width: "30%"
-	}
-});
-
 
 export default PlaceInput;

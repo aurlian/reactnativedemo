@@ -7,11 +7,13 @@ import {
   StyleSheet,
   ImageBackground
 } from "react-native";
+
 import startMainTabs from "../MainTabs/startMainTabs";
 import DefaultTextInput from "../../components/UI/DefaultTextInput/DefaultTextInput";
 import HeadingText from "../../components/UI/HeadingText/HeadingText";
 import MainText from "../../components/UI/MainText/MainText";
 import sunsetImage from "../../assets/sunset.jpg";
+import ButtonWithBackground from "../../components/UI/ButtonWithBackground/ButtonWithBackground";
 
 class AuthScreen extends Component {
   loginHandler = () => {
@@ -25,7 +27,12 @@ class AuthScreen extends Component {
             <HeadingText>Please Login</HeadingText>
           </MainText>
 
-          <Button title="Switch to Login" onPress={this.loginHandler} />
+          <ButtonWithBackground
+            color="#29aaf4"
+            onButtonPress={this.loginHandler}
+          >
+            Switch to Login
+          </ButtonWithBackground>
           <View style={styles.inputContainer}>
             <DefaultTextInput
               placeholder="Your Email Address"
@@ -37,7 +44,12 @@ class AuthScreen extends Component {
               style={styles.input}
             />
           </View>
-          <Button title="Submit" onPress={this.loginHandler} />
+          <ButtonWithBackground
+            color="#29aaf4"
+            onButtonPress={this.loginHandler}
+          >
+            Submit
+          </ButtonWithBackground>
         </View>
       </ImageBackground>
     );
