@@ -5,7 +5,8 @@ import {
   Button,
   TextInput,
   StyleSheet,
-  ImageBackground
+  ImageBackground,
+  Dimensions
 } from "react-native";
 
 import startMainTabs from "../MainTabs/startMainTabs";
@@ -16,16 +17,47 @@ import sunsetImage from "../../assets/sunset.jpg";
 import ButtonWithBackground from "../../components/UI/ButtonWithBackground/ButtonWithBackground";
 
 class AuthScreen extends Component {
+  state = {
+    respStyles: {
+      pwContainerDirection: "column",
+      pwContainerJustifyContent: "flex-start",
+      pwWrapperWidth: "100%"
+    }
+  };
+  constructor(props) {
+    super(props);
+    Dimensions.addEventListener("change", dims => {
+      this.setState({
+        respStyles: {
+          pwContainerDirection:
+            Dimensions.get("window").height > 500 ? "column" : "row",
+          pwContainerJustifyContent:
+            Dimensions.get("window").height > 500
+              ? "flex-start"
+              : "space-between",
+          pwWrapperWidth: Dimensions.get("window").height > 500 ? "100%" : "45%"
+        }
+      });
+    });
+  }
   loginHandler = () => {
     startMainTabs();
   };
   render() {
+    let headingText = null;
+    console.log(Dimensions.get("window").height);
+    if (Dimensions.get("window").height > 500) {
+      headingText = (
+        <MainText>
+          <HeadingText>Please Login</HeadingText>
+        </MainText>
+      );
+    }
+
     return (
       <ImageBackground source={sunsetImage} style={styles.backgroundImage}>
         <View style={styles.container}>
-          <MainText>
-            <HeadingText>Please Login</HeadingText>
-          </MainText>
+          {headingText}
 
           <ButtonWithBackground
             color="#29aaf4"
@@ -38,11 +70,22 @@ class AuthScreen extends Component {
               placeholder="Your Email Address"
               style={styles.input}
             />
-            <DefaultTextInput placeholder="Password" style={styles.input} />
-            <DefaultTextInput
-              placeholder="Confirm Password"
-              style={styles.input}
-            />
+            <View
+              style={{
+                flexDirection: this.state.respStyles.pwContainerDirection,
+                justifyContent: this.state.respStyles.pwContainerJustifyContent
+              }}
+            >
+              <View style={{ width: this.state.respStyles.pwWrapperWidth }}>
+                <DefaultTextInput placeholder="Password" style={styles.input} />
+              </View>
+              <View style={{ width: this.state.respStyles.pwWrapperWidth }}>
+                <DefaultTextInput
+                  placeholder="Confirm Password"
+                  style={styles.input}
+                />
+              </View>
+            </View>
           </View>
           <ButtonWithBackground
             color="#29aaf4"
@@ -72,6 +115,13 @@ const styles = StyleSheet.create({
   input: {
     backgroundColor: "#eee",
     borderColor: "#bbb"
+  },
+  passwordContainer: {
+    flexDirection: Dimensions.get("window").height > 500 ? "column" : "row",
+    justifyContent: "space-between"
+  },
+  passwordWrapper: {
+    width: Dimensions.get("window").height > 500 ? "100%" : "45%"
   }
 });
 
