@@ -44,6 +44,14 @@ const startTabs = () => {
           }
         }
       ],
+      tabsStyle: {
+        tabBarButtonColor: "red",
+        tabBarSelectedButtonColor: "orange"
+      },
+      appStyle: {
+        tabBarButtonColor: "red",
+        tabBarSelectedButtonColor: "orange"
+      },
       drawer: {
         left: {
           screen: "serdig.SideDrawer"
