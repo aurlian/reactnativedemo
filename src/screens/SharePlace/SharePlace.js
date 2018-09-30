@@ -1,13 +1,5 @@
 import React, { Component } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  StyleSheet,
-  ScrollView,
-  Image
-} from "react-native";
+import { View, Button, StyleSheet, ScrollView } from "react-native";
 import { connect } from "react-redux";
 
 import { addPlace } from "../../store/actions/index";
@@ -37,11 +29,15 @@ class SharePlaceScreen extends Component {
       location: {
         value: null,
         valid: false
+      },
+      image: {
+        value: null,
+        valid: false
       }
     }
   };
-  constructor(prosp) {
-    super(prosp);
+  constructor(props) {
+    super(props);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent);
   }
 
@@ -72,6 +68,20 @@ class SharePlaceScreen extends Component {
     });
   };
 
+  imagePickedHandler = image => {
+    this.setState(prevState => {
+      return {
+        controls: {
+          ...prevState.controls,
+          image: {
+            value: image,
+            valid: true
+          }
+        }
+      };
+    });
+  };
+
   locationPickedHandler = location => {
     this.setState(prevState => {
       return {
@@ -89,7 +99,7 @@ class SharePlaceScreen extends Component {
   placeAddedHandler = () => {
     this.props.onAddPlace(
       this.state.controls.placeName.value,
-      placeImage,
+      this.state.controls.image.value,
       this.state.controls.location.value
     );
   };
@@ -101,7 +111,7 @@ class SharePlaceScreen extends Component {
           <MainText>
             <HeadingText>Share a place with us!</HeadingText>
           </MainText>
-          <PickImage />
+          <PickImage onImagePicked={this.imagePickedHandler} />
           <PickLocation onLocationPick={this.locationPickedHandler} />
           <PlaceInput
             placeData={this.state.controls.placeName}
@@ -113,7 +123,8 @@ class SharePlaceScreen extends Component {
               onPress={this.placeAddedHandler}
               disabled={
                 !this.state.controls.placeName.valid ||
-                !this.state.controls.location.valid
+                !this.state.controls.location.valid ||
+                !this.state.controls.image.valid
               }
             />
           </View>
