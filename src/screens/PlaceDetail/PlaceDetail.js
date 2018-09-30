@@ -8,8 +8,9 @@ import {
   TouchableOpacity
 } from "react-native";
 import { connect } from "react-redux";
-import { deletePlace } from "../../store/actions/index";
+import MapView from "react-native-maps";
 
+import { deletePlace } from "../../store/actions/index";
 import Icon from "react-native-vector-icons/Ionicons";
 
 class PlaceDetail extends Component {
@@ -45,11 +46,25 @@ class PlaceDetail extends Component {
             : styles.landContainer
         ]}
       >
-        <View style={styles.subContainer}>
-          <Image
-            source={this.props.selectedPlace.image}
-            style={styles.placeImage}
-          />
+        <View style={styles.placeDetailContainer}>
+          <View style={styles.subContainer}>
+            <Image
+              source={this.props.selectedPlace.image}
+              style={styles.placeImage}
+            />
+          </View>
+          <View style={styles.subContainer}>
+            <MapView
+              initialRegion={{
+                ...this.props.selectedPlace.location,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421
+              }}
+              style={styles.map}
+            >
+              <MapView.Marker coordinate={this.props.selectedPlace.location} />
+            </MapView>
+          </View>
         </View>
         <View style={styles.subContainer}>
           <View>
@@ -83,7 +98,7 @@ const styles = StyleSheet.create({
   },
   placeImage: {
     width: "100%",
-    height: 200
+    height: "100%"
   },
   placeName: {
     fontWeight: "bold",
@@ -95,6 +110,12 @@ const styles = StyleSheet.create({
   },
   subContainer: {
     flex: 1
+  },
+  map: {
+    ...StyleSheet.absoluteFillObject
+  },
+  placeDetailContainer: {
+    flex: 2
   }
 });
 
