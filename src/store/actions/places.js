@@ -46,10 +46,6 @@ export const addPlace = (placeName, placeImage, location) => {
 export const getPlaces = () => {
   return dispatch => {
     fetch("https://serdig-1538262587074.firebaseio.com/places.json")
-      .catch(err => {
-        alert("error");
-        console.log(err);
-      })
       .then(res => res.json())
       .then(parsed => {
         const places = [];
@@ -63,6 +59,10 @@ export const getPlaces = () => {
           });
         }
         dispatch(setPlaces(places));
+      })
+      .catch(err => {
+        alert("error");
+        console.log(err);
       });
   };
 };
@@ -82,13 +82,13 @@ export const deletePlace = key => {
         method: "DELETE"
       }
     )
-      .catch(err => {
-        alert("error");
-        console.log(err);
-      })
       .then(res => res.json())
       .then(parsed => {
         dispatch(deletePlaceFromLocalStore(key));
+      })
+      .catch(err => {
+        alert("error");
+        console.log(err);
       });
   };
 };
