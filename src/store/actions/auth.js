@@ -1,4 +1,4 @@
-import { TRY_AUTH } from "./actionTypes";
+import { TRY_AUTH, AUTH_SET_TOKEN } from "./actionTypes";
 import { uiStartLoading, uiStopLoading } from "./index";
 import startMainTabs from "../../screens/MainTabs/startMainTabs";
 
@@ -36,9 +36,10 @@ export const authCall = (authData, url) => {
       .then(res => res.json())
       .then(parsed => {
         dispatch(uiStopLoading());
-        if (parsed.error) {
+        if (!parsed.idToken) {
           alert("auth error");
         } else {
+          dispatch(authSetToken(parsed.idToken));
           startMainTabs();
         }
 
@@ -49,5 +50,26 @@ export const authCall = (authData, url) => {
         console.log(err);
         dispatch(uiStopLoading());
       });
+  };
+};
+
+export const authSetToken = token => {
+  return {
+    type: AUTH_SET_TOKEN,
+    token: token
+  };
+};
+
+export const authGetToken = () => {
+  return (dispatch, getState) => {
+    const promise = new Promise((resolve, reject) => {
+      const token = getState().auth.token;
+      if (!token) {
+        reject();
+      } else {
+        resolve(token);
+      }
+    });
+    return promise;
   };
 };
