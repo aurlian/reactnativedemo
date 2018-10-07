@@ -3,6 +3,7 @@ import { AsyncStorage } from "react-native";
 import { uiStartLoading, uiStopLoading } from "./index";
 import startMainTabs from "../../screens/MainTabs/startMainTabs";
 import { logInfo, logError, logObject } from "../../logger/logger";
+import App from "../../../App";
 
 const FIREBASE_APIKEY = "AIzaSyBPAe7fqer1dn68TGL5XXmI4OBjha2Agcg";
 
@@ -67,7 +68,7 @@ const authCall = (authData, url) => {
   };
 };
 
-export const authRefresh = refreshToken => {
+const authRefresh = refreshToken => {
   logInfo("refreshing token");
   return dispatch => {
     return new Promise((resolve, reject) => {
@@ -102,7 +103,7 @@ export const authRefresh = refreshToken => {
   };
 };
 
-export const authStoreToken = (token, expiresIn, refreshToken) => {
+const authStoreToken = (token, expiresIn, refreshToken) => {
   logInfo("Storing auth info in asyncStorage");
   return dispatch => {
     const now = new Date();
@@ -172,10 +173,16 @@ export const authAutoSignIn = () => {
   };
 };
 
-export const authClearStorage = () => {
+const authClearStorage = () => {
   return dispatch => {
     AsyncStorage.removeItem("serdig:auth:token");
     AsyncStorage.removeItem("serdig:auth:expiryDate");
-    AsyncStorage.removeItem("serdig:auth:refreshToken");
+    return AsyncStorage.removeItem("serdig:auth:refreshToken");
+  };
+};
+
+export const authLogout = () => {
+  return dispatch => {
+    dispatch(authClearStorage()).then(() => App());
   };
 };
