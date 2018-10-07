@@ -1,5 +1,11 @@
-import { SET_PLACES, DELETE_PLACE } from "./actionTypes";
+import {
+  SET_PLACES,
+  DELETE_PLACE,
+  PLACE_ADDED,
+  START_ADD_PLACE
+} from "./actionTypes";
 import { uiStartLoading, uiStopLoading, authGetToken } from "./index";
+import { logInfo, logObject } from "../../logger/logger";
 
 export const addPlace = (placeName, placeImage, location) => {
   return dispatch => {
@@ -43,15 +49,21 @@ export const addPlace = (placeName, placeImage, location) => {
                 body: JSON.stringify(placeData)
               }
             )
+              .then(res => {
+                if (res.ok) {
+                  res.json();
+                } else {
+                  throw new Error("http error");
+                }
+              })
+              .then(parsed => {
+                dispatch(uiStopLoading());
+                dispatch(placeAdded());
+              })
               .catch(err => {
                 dispatch(uiStopLoading());
                 alert("error occured");
                 console.log(err);
-              })
-              .then(res => res.json())
-              .then(parsed => {
-                dispatch(uiStopLoading());
-                console.log(parsed);
               });
           })
           .catch(err => {
@@ -108,19 +120,26 @@ export const setPlaces = places => {
 
 export const deletePlace = key => {
   return (dispatch, getState) => {
-    const token = getState().auth.token;
-    fetch(
-      "https://serdig-1538262587074.firebaseio.com/places/" +
-        key +
-        ".json?auth=" +
-        token,
-      {
-        method: "DELETE"
-      }
-    )
-      .then(res => res.json())
-      .then(parsed => {
-        dispatch(deletePlaceFromLocalStore(key));
+    dispatch(authGetToken())
+      .then(token => {
+        fetch(
+          "https://serdig-1538262587074.firebaseio.com/places/" +
+            key +
+            ".json?auth=" +
+            token,
+          {
+            method: "DELETE"
+          }
+        )
+          .then(res => res.json())
+          .then(parsed => {
+            logObject(parsed);
+            dispatch(deletePlaceFromLocalStore(key));
+          })
+          .catch(err => {
+            alert("error");
+            console.log(err);
+          });
       })
       .catch(err => {
         alert("error");
@@ -133,5 +152,17 @@ export const deletePlaceFromLocalStore = key => {
   return {
     type: DELETE_PLACE,
     key: key
+  };
+};
+
+export const placeAdded = () => {
+  return {
+    type: PLACE_ADDED
+  };
+};
+
+export const startAddPlace = () => {
+  return {
+    type: START_ADD_PLACE
   };
 };

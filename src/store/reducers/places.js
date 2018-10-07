@@ -1,7 +1,13 @@
-import { SET_PLACES, DELETE_PLACE } from "../actions/actionTypes";
+import {
+  SET_PLACES,
+  DELETE_PLACE,
+  PLACE_ADDED,
+  START_ADD_PLACE
+} from "../actions/actionTypes";
 
 const initialState = {
-  places: []
+  places: [],
+  placeAdded: false
 };
 
 const placeReducer = (state = initialState, action) => {
@@ -11,7 +17,6 @@ const placeReducer = (state = initialState, action) => {
         ...state,
         places: action.places
       };
-      break;
     case DELETE_PLACE:
       return {
         ...state,
@@ -19,24 +24,17 @@ const placeReducer = (state = initialState, action) => {
           return place.key !== action.key;
         })
       };
-      break;
-    // case ADD_PLACE:
-    //   return {
-    //     ...state,
-    //     places: state.places.concat({
-    //       key: Math.random().toString(),
-    //       name: action.placeName,
-    //       image: action.placeImage,
-    //       location: action.location
-    //     })
-    //   };
-    // case DELETE_PLACE:
-    //   return {
-    //     ...state,
-    //     places: state.places.filter(place => {
-    //       return place.key !== action.placeKey;
-    //     })
-    //   };
+    case PLACE_ADDED:
+      return {
+        ...state,
+        placeAdded: true
+      };
+    case START_ADD_PLACE:
+      return {
+        ...state,
+        placeAdded: false
+      };
+
     default:
       return state;
   }

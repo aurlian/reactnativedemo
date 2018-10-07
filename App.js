@@ -48,7 +48,10 @@ export default () => {
   Navigation.startSingleScreenApp({
     screen: {
       screen: "serdig.AuthScreen",
-      title: "Login"
+      title: "Login",
+      navigatorStyle: {
+        navBarHidden: true
+      }
     }
   });
 };

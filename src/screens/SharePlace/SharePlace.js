@@ -17,36 +17,50 @@ import PlaceInput from "../../components/PlaceInput/PlaceInput";
 import PickImage from "../../components/PickImage/PickImage";
 import PickLocation from "../../components/PickLocation/PickLocation";
 import validate from "../../utility/validation";
+import { startAddPlace } from "../../store/actions/index";
 
 class SharePlaceScreen extends Component {
   static navigatorStyle = {
     navBarButtonColor: "orange"
   };
 
-  state = {
-    controls: {
-      placeName: {
-        value: "",
-        valid: false,
-        touched: false,
-        validationRules: {
-          notEmpty: true
-        }
-      },
-      location: {
-        value: null,
-        valid: false
-      },
-      image: {
-        value: null,
-        valid: false
-      }
-    }
-  };
   constructor(props) {
     super(props);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent);
   }
+
+  componentWillMount() {
+    this.reset();
+  }
+
+  componentDidUpdate() {
+    if (this.props.placeAdded) {
+      this.props.navigator.switchToTab({ tabIndex: 0 });
+    }
+  }
+
+  reset = () => {
+    this.setState({
+      controls: {
+        placeName: {
+          value: "",
+          valid: false,
+          touched: false,
+          validationRules: {
+            notEmpty: true
+          }
+        },
+        location: {
+          value: null,
+          valid: false
+        },
+        image: {
+          value: null,
+          valid: false
+        }
+      }
+    });
+  };
 
   onNavigatorEvent = event => {
     if (event.type === "NavBarButtonPress") {
@@ -55,6 +69,10 @@ class SharePlaceScreen extends Component {
           side: "left",
           animated: true
         });
+      }
+    } else if (event.type === "ScreenChangedEvent") {
+      if (event.id === "willAppear") {
+        this.props.onStartAddPlace();
       }
     }
   };
@@ -109,6 +127,9 @@ class SharePlaceScreen extends Component {
       this.state.controls.image.value,
       this.state.controls.location.value
     );
+    this.reset();
+    this.imagePickerRef.reset();
+    this.locationPickerRef.reset();
   };
 
   render() {
@@ -133,8 +154,14 @@ class SharePlaceScreen extends Component {
           <MainText>
             <HeadingText>Share a place with us!</HeadingText>
           </MainText>
-          <PickImage onImagePicked={this.imagePickedHandler} />
-          <PickLocation onLocationPick={this.locationPickedHandler} />
+          <PickImage
+            onImagePicked={this.imagePickedHandler}
+            ref={ref => (this.imagePickerRef = ref)}
+          />
+          <PickLocation
+            onLocationPick={this.locationPickedHandler}
+            ref={ref => (this.locationPickerRef = ref)}
+          />
           <PlaceInput
             placeData={this.state.controls.placeName}
             onChangeText={this.placeNameChangeHandler}
@@ -169,14 +196,16 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   return {
-    isLoading: state.ui.isLoading
+    isLoading: state.ui.isLoading,
+    placeAdded: state.places.placeAdded
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     onAddPlace: (placeName, placeImage, location) =>
-      dispatch(addPlace(placeName, placeImage, location))
+      dispatch(addPlace(placeName, placeImage, location)),
+    onStartAddPlace: () => dispatch(startAddPlace())
   };
 };
 
